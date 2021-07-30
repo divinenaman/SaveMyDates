@@ -37,25 +37,82 @@ export default class FirestoreService {
 		try {
 			const profile = await AsyncStorageService.getProfile();
 			if (profile) {
-				const docs = await firestore()
-					.collection('public_todo_list')
-					.where('username', '==', profile.username)
-					.get();
-				if (docs.size > 0) {
-					let flatDoc: any[] = [];
-					await docs.forEach(x => {
-						let id = x.id;
-						let data = x.data();
-						delete data.username;
-						data.id = id;
-						flatDoc.push(data);
-					});
-					return flatDoc;
+				const doc = await FirestoreService.findProfile(profile.username);
+				const users = [profile.username];
+				if (doc) users.push(...doc.data.following);
+
+				let flatDoc: any[] = [];
+
+				for (let u of users) {
+					const userDoc = await firestore()
+						.collection('public_todo_list')
+						.where('username', '==', u)
+						.get();
+
+					if (userDoc.size > 0) {
+						await userDoc.forEach(x => {
+							let id = x.id;
+							let data = x.data();
+							data.id = id;
+							flatDoc.push(data);
+						});
+					}
 				}
+				return flatDoc;
 			}
 			return null;
 		} catch (e) {
 			console.log(e);
+			return null;
+		}
+	}
+
+	static async removeToDo(id: string): Promise<boolean> {
+		try {
+			const profile = await AsyncStorageService.getProfile();
+			if (profile) {
+				await firestore().collection('public_todo_list').doc(id).delete();
+				return true;
+			}
+			return false;
+		} catch (e) {
+			return false;
+		}
+	}
+
+	static async addFollowProfile(username: string): Promise<boolean> {
+		try {
+			const profile = await AsyncStorageService.getProfile();
+			if (profile) {
+				const doc = await FirestoreService.findProfile(profile.username);
+				if (doc) {
+					await firestore()
+						.collection('profile')
+						.doc(doc.id)
+						.update({
+							following: firestore.FieldValue.arrayUnion(username),
+						});
+
+					return true;
+				}
+			}
+			return false;
+		} catch (e) {
+			return false;
+		}
+	}
+
+	static async getAllFollowProfile(): Promise<string[] | null> {
+		try {
+			const profile = await AsyncStorageService.getProfile();
+			if (profile) {
+				const doc = await FirestoreService.findProfile(profile.username);
+				if (doc) {
+					return doc.data.following;
+				}
+			}
+			return null;
+		} catch (e) {
 			return null;
 		}
 	}

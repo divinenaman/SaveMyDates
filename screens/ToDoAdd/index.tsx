@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {VStack} from 'native-base';
+import {VStack, Center} from 'native-base';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
 import FirestoreService from '../../services/firestoreService';
@@ -35,9 +35,9 @@ const ToDoAdd = ({navigation, type = 'local'}: todoAddProps) => {
 		setLoading(true);
 	});
 	return (
-		<VStack flex={1} space={4} alignItems="center">
+		<Center flex={1}>
 			<Form navigation={navigation} storeToDo={storeToDo} />
-		</VStack>
+		</Center>
 	);
 };
 

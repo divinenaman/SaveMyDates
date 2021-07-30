@@ -14,9 +14,11 @@ interface todoCardProps {
 	type: string;
 	title: string;
 	desp: string;
-	dateTime: Date;
-	reminders: Date;
+	dateTime: string;
+	reminders: string;
 	status: 'ongoing' | 'completed' | 'passed';
+	username: string;
+	remove: (a: string) => void;
 }
 
 export default function ToDoCard({
@@ -27,6 +29,8 @@ export default function ToDoCard({
 	dateTime,
 	reminders,
 	status,
+	username,
+	remove,
 }: todoCardProps) {
 	return (
 		<VStack
@@ -39,7 +43,8 @@ export default function ToDoCard({
 			shadow={3}
 			space={4}
 			p="2"
-			justifyContent="center">
+			justifyContent="center"
+			mb="5">
 			<VStack w="90%" alignSelf="center">
 				<Text fontSize="sm" alignSelf="flex-start" mb="2">
 					{type}
@@ -57,11 +62,20 @@ export default function ToDoCard({
 					<Heading size="2xl">
 						{new Date(dateTime).toLocaleDateString()}
 					</Heading>
+					<Text fontSize="xl">{new Date(dateTime).toLocaleTimeString()}</Text>
 				</Box>
 			</HStack>
 			<Box alignSelf="flex-end">
-				<Text fontSize="sm" highlight>
+				<Text fontSize="sm" highlight mb="2">
 					{status}
+				</Text>
+				<Text fontSize="sm" highlight mb="2">
+					{username}
+				</Text>
+			</Box>
+			<Box alignSelf="center">
+				<Text fontSize="sm" highlight mb="2" onPress={() => remove(id)}>
+					remove
 				</Text>
 			</Box>
 		</VStack>

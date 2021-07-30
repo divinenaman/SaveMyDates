@@ -8,6 +8,7 @@ import Loader from '../../components/Loader';
 import ToDoListView from '../../screens/ToDoListView';
 import ToDoAdd from '../../screens/ToDoAdd';
 import CreateProfileScreen from '../../screens/CreateProfileScreen';
+import FollowProfileScreen from '../../screens/FollowPofileScreen';
 
 import {checkProfileService} from './service';
 
@@ -49,17 +50,24 @@ export default function PublicSpace() {
         <Loader />
       ) : (
         <>
-          {!profile && <CreateProfileScreen onProfileSet={checkProfile} />}
-          {profile && (
-            <Tab.Navigator initialRouteName="DisplayToDo">
-              <Tab.Screen name="DisplayToDo" options={{title: 'To DO'}}>
-                {() => <ToDoListView type={'public'} />}
-              </Tab.Screen>
-              <Tab.Screen name="AddToDo" options={{title: 'Add To Do'}}>
-                {() => <ToDoAdd type={'public'} />}
-              </Tab.Screen>
-            </Tab.Navigator>
-          )}
+          <Tab.Navigator initialRouteName="DisplayToDo">
+            {!profile && <CreateProfileScreen onProfileSet={checkProfile} />}
+            {profile && (
+              <>
+                <Tab.Screen name="DisplayToDo" options={{title: 'To DO'}}>
+                  {() => <ToDoListView type={'public'} />}
+                </Tab.Screen>
+                <Tab.Screen name="AddToDo" options={{title: 'Add To Do'}}>
+                  {() => <ToDoAdd type={'public'} />}
+                </Tab.Screen>
+                <Tab.Screen
+                  name="FollowProfile"
+                  options={{title: 'Follow Profiles'}}>
+                  {() => <FollowProfileScreen />}
+                </Tab.Screen>
+              </>
+            )}
+          </Tab.Navigator>
         </>
       )}
     </>

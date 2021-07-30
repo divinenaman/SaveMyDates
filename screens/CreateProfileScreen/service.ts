@@ -26,6 +26,7 @@ export async function createProfileService(
 				username,
 				privatePin,
 				publicPin,
+				following: [],
 			});
 			if (saveProfile) {
 				// add to async

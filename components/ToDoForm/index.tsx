@@ -173,7 +173,7 @@ function ToDoForm({
               errors,
               setFieldValue,
             }) => (
-              <VStack width="80%" space={4} p={4}>
+              <VStack space={4} alignItems="center">
                 <FormControl isRequired isInvalid={'type' in errors}>
                   <FormControl.Label>Type</FormControl.Label>
                   {console.log('errors', errors)}
@@ -205,6 +205,7 @@ function ToDoForm({
                   <FormControl.Label>Date and Time</FormControl.Label>
                   <DatePicker
                     date={new Date(values.dateTime)}
+                    androidVariant="nativeAndroid"
                     onDateChange={newdate =>
                       setFieldValue('dateTime', newdate.toString())
                     }
@@ -231,6 +232,7 @@ function ToDoForm({
                   <FormControl.Label>Reminders</FormControl.Label>
                   <DatePicker
                     date={new Date(values.reminders)}
+                    androidVariant="nativeAndroid"
                     onDateChange={newdate =>
                       setFieldValue('reminders', newdate.toString())
                     }

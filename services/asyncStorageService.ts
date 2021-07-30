@@ -57,10 +57,12 @@ export default class AsyncStorageService {
 
 			const id_set = await AsyncStorage.getItem('local_todo_list');
 			if (id_set) {
-				const new_id_set = JSON.parse(id_set).data.push(id);
+				let new_id_set = [...JSON.parse(id_set).data];
+				new_id_set.push(id);
+				console.log('new_ids', new_id_set);
 				await AsyncStorage.setItem(
 					'local_todo_list',
-					JSON.stringify(new_id_set),
+					JSON.stringify({data: new_id_set}),
 				);
 			} else
 				await AsyncStorage.setItem(
@@ -77,21 +79,25 @@ export default class AsyncStorageService {
 		try {
 			const value = await AsyncStorage.getItem(id);
 			if (value !== null) {
-				return JSON.parse(value);
+				const res = JSON.parse(value);
+				res.username = 'local';
+				res.id = id;
+				return res;
 			} else return null;
 		} catch (e) {
 			return null;
 		}
 	}
 
-	static async getAllToDo(type: string): Promise<todoFormProps[]> {
+	static async getAllToDo(type: string): Promise<any[]> {
 		try {
 			const id_set = await AsyncStorage.getItem('local_todo_list');
 			let res = [];
 			if (id_set) {
+				console.log(id_set);
 				const new_id_set = JSON.parse(id_set).data;
 				for (const i of new_id_set) {
-					const data = await this.getToDo(i);
+					const data = await AsyncStorageService.getToDo(i);
 					if (data) res.push(data);
 				}
 			}
@@ -99,6 +105,29 @@ export default class AsyncStorageService {
 		} catch (e) {
 			console.log('getAllerror', e);
 			return [];
+		}
+	}
+
+	static async removeToDo(id: string): Promise<boolean> {
+		try {
+			await AsyncStorage.removeItem(id);
+			let res = await AsyncStorage.getItem('local_todo_list');
+
+			if (res) {
+				let old_ids = JSON.parse(res).data;
+				let new_ids = old_ids.filter((x: string) => x !== id);
+				await AsyncStorage.setItem(
+					'local_todo_list',
+					JSON.stringify({data: new_ids}),
+				);
+
+				let check = await AsyncStorage.getItem('local_todo_list');
+				console.log(check);
+				return true;
+			}
+			return false;
+		} catch (e) {
+			return false;
 		}
 	}
 
