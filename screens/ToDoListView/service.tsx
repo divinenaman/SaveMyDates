@@ -43,10 +43,10 @@ export const getToDo = async (id: string) => {
 	}
 };
 
-export const getAllToDo = async (): Promise<todoFormProps[]> => {
+export const getAllToDo = async (type: string): Promise<todoFormProps[]> => {
 	try {
 		const id_set = await AsyncStorage.getItem('ids');
-		const res = [];
+		let res = [];
 		console.log(id_set);
 		if (id_set) {
 			const new_id_set = JSON.parse(id_set).ids;
@@ -55,6 +55,7 @@ export const getAllToDo = async (): Promise<todoFormProps[]> => {
 				if (data) res.push(data);
 			}
 		}
+		res = res.filter(x => x.type == type);
 		console.log('getAll', res);
 		return res;
 	} catch (e) {

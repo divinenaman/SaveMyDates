@@ -17,15 +17,13 @@ import DatePicker from 'react-native-date-picker';
 
 import Loader from '../Loader';
 
-import {storeToDo} from './service';
-
 interface todoProps {
   id?: string;
   type?: string;
   title?: string;
   desp?: string;
-  dateTime?: Date;
-  reminders?: Date;
+  dateTime?: string;
+  reminders?: string;
   status?: 'ongoing' | 'completed' | 'passed';
 }
 
@@ -41,7 +39,8 @@ type AddToDoNavigationProp = BottomTabNavigationProp<
 
 interface todoFormProps extends todoProps {
   onSubmitRoute?: 'DisplayToDo' | 'AddToDo';
-  navigation: AddToDoNavigationProp;
+  navigation?: AddToDoNavigationProp;
+  storeToDo: (data: todoProps) => Promise<boolean>;
 }
 
 interface validateProps {
@@ -49,8 +48,8 @@ interface validateProps {
   type?: string;
   title?: string;
   desp?: string;
-  dateTime?: Date;
-  reminders?: Date;
+  dateTime?: string;
+  reminders?: string;
   status?: 'ongoing' | 'completed' | 'passed';
 }
 
@@ -66,8 +65,8 @@ interface submitProps {
   type: string;
   title: string;
   desp: string;
-  dateTime: Date;
-  reminders: Date;
+  dateTime: string;
+  reminders: string;
   status: 'ongoing' | 'completed' | 'passed';
 }
 
@@ -88,11 +87,16 @@ const validate = (values: validateProps) => {
     errors.desp = 'Required';
   }
   if (values.dateTime != null) {
-    const diff = dateDiff(new Date(), values.dateTime);
+    const diff = dateDiff(new Date(), new Date(values.dateTime));
+    console.log(typeof values.dateTime, values.dateTime, diff);
     if (diff <= 0) errors.dateTime = 'Select Correct Date';
 
     if (values.reminders != null) {
-      const diff = dateDiff(values.reminders, values.dateTime);
+      const diff = dateDiff(
+        new Date(values.reminders),
+        new Date(values.dateTime),
+      );
+      console.log(typeof values.reminders, values.reminders, diff);
       if (diff <= 0) errors.reminders = 'Select Correct Date';
     }
   }
@@ -110,6 +114,7 @@ function ToDoForm({
   status,
   onSubmitRoute = 'DisplayToDo',
   navigation,
+  storeToDo,
 }: todoFormProps) {
   const [submissionState, setSubmissionState] = useState(false);
 
@@ -117,22 +122,23 @@ function ToDoForm({
 
   const onSubmit = (data: submitProps) => {
     setSubmissionState(true);
+    setSubmissionMsg('loading...');
     storeToDo(data).then(res => {
       if (res) {
         setSubmissionMsg(id ? 'ToDo Updated' : 'ToDo Added');
         setTimeout(() => {
-          if (onSubmitRoute) {
+          if (onSubmitRoute && navigation) {
             setSubmissionState(false);
             navigation.navigate(onSubmitRoute);
           } else {
             setSubmissionState(false);
           }
-        }, 5000);
+        }, 3000);
       } else {
         setSubmissionMsg('Something Went Wrong');
         setTimeout(() => {
           setSubmissionState(false);
-        }, 5000);
+        }, 3000);
       }
     });
   };
@@ -142,8 +148,8 @@ function ToDoForm({
     type: type || '',
     title: title || '',
     desp: desp || '',
-    dateTime: dateTime || new Date(),
-    reminders: reminders || new Date(),
+    dateTime: dateTime || new Date().toString(),
+    reminders: reminders || new Date().toString(),
     status: status || 'ongoing',
   };
 
@@ -151,14 +157,7 @@ function ToDoForm({
 
   return (
     <>
-      {submissionState && (
-        <Center flex={1}>
-          <VStack space={4} alignItems="center" justifyContent="center">
-            <Loader />
-            <Heading>{submissionMsg}</Heading>
-          </VStack>
-        </Center>
-      )}
+      {submissionState && <Loader statusMessage={submissionMsg} />}
 
       {!submissionState && (
         <ScrollView flex={1}>
@@ -174,7 +173,7 @@ function ToDoForm({
               errors,
               setFieldValue,
             }) => (
-              <VStack width="100%" space={4} p={4}>
+              <VStack width="80%" space={4} p={4}>
                 <FormControl isRequired isInvalid={'type' in errors}>
                   <FormControl.Label>Type</FormControl.Label>
                   {console.log('errors', errors)}
@@ -205,8 +204,10 @@ function ToDoForm({
                 <FormControl isInvalid={'dateTime' in errors}>
                   <FormControl.Label>Date and Time</FormControl.Label>
                   <DatePicker
-                    date={values.dateTime}
-                    onDateChange={newdate => setFieldValue('dateTime', newdate)}
+                    date={new Date(values.dateTime)}
+                    onDateChange={newdate =>
+                      setFieldValue('dateTime', newdate.toString())
+                    }
                   />
                   <FormControl.ErrorMessage>
                     {errors.desp}
@@ -229,9 +230,9 @@ function ToDoForm({
                 <FormControl isRequired isInvalid={'reminders' in errors}>
                   <FormControl.Label>Reminders</FormControl.Label>
                   <DatePicker
-                    date={values.reminders}
+                    date={new Date(values.reminders)}
                     onDateChange={newdate =>
-                      setFieldValue('reminders', newdate)
+                      setFieldValue('reminders', newdate.toString())
                     }
                   />
                   <FormControl.ErrorMessage>

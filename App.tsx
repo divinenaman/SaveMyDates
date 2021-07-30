@@ -1,30 +1,30 @@
 import React from 'react';
 
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NativeBaseProvider, Box} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 
-import ToDoListView from './screens/ToDoListView';
-import ToDoAdd from './screens/ToDoAdd';
+import PersonalView from './routes/Personal';
+import PublicView from './routes/Public';
 
-const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 export default function App() {
   return (
     <NativeBaseProvider>
       <NavigationContainer>
-        <Tab.Navigator initialRouteName="DisplayToDo">
-          <Tab.Screen
-            name="DisplayToDo"
-            component={ToDoListView}
-            options={{title: 'To DO'}}
+        <Drawer.Navigator initialRouteName="Personal">
+          <Drawer.Screen
+            name="Personal"
+            component={PersonalView}
+            options={{title: 'Personal Space'}}
           />
-          <Tab.Screen
-            name="AddToDo"
-            component={ToDoAdd}
-            options={{title: 'Add To Do'}}
+          <Drawer.Screen
+            name="Public"
+            component={PublicView}
+            options={{title: 'Public Space'}}
           />
-        </Tab.Navigator>
+        </Drawer.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
   );
