@@ -13,7 +13,11 @@ export default function CreateProfile({onSubmit}: createProfileProps) {
     <Center w="100%" h="100%">
       <VStack m="2" justifyContent="space-between">
         <Heading>Login Public Profile</Heading>
-        <Input placeholder="work" onChangeText={setUsername} value={username} />
+        <Input
+          placeholder="username"
+          onChangeText={setUsername}
+          value={username}
+        />
         <Input
           type="password"
           placeholder="private pin"

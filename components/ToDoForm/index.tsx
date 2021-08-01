@@ -14,6 +14,7 @@ import React, {useState, useEffect} from 'react';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {Formik} from 'formik';
 import DatePicker from 'react-native-date-picker';
+import {useNavigation} from '@react-navigation/native';
 
 import Loader from '../Loader';
 
@@ -39,7 +40,7 @@ type AddToDoNavigationProp = BottomTabNavigationProp<
 
 interface todoFormProps extends todoProps {
   onSubmitRoute?: 'DisplayToDo' | 'AddToDo';
-  navigation?: AddToDoNavigationProp;
+  navigation?: any;
   storeToDo: (data: todoProps) => Promise<boolean>;
 }
 
@@ -72,9 +73,9 @@ interface submitProps {
 
 const dateDiff = (d1: Date, d2: Date) => {
   const MS_PER_DAY = 1000 * 60 * 60 * 24;
-  const utc1 = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate());
-  const utc2 = Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate());
-  return Math.floor((utc2 - utc1) / MS_PER_DAY);
+  const utc1 = d1.valueOf();
+  const utc2 = d2.valueOf();
+  return utc2 - utc1;
 };
 
 const validate = (values: validateProps) => {
@@ -92,12 +93,15 @@ const validate = (values: validateProps) => {
     if (diff <= 0) errors.dateTime = 'Select Correct Date';
 
     if (values.reminders != null) {
-      const diff = dateDiff(
+      const diff1 = dateDiff(new Date(), new Date(values.reminders));
+
+      const diff2 = dateDiff(
         new Date(values.reminders),
         new Date(values.dateTime),
       );
+
       console.log(typeof values.reminders, values.reminders, diff);
-      if (diff <= 0) errors.reminders = 'Select Correct Date';
+      if (diff1 <= 0 || diff2 <= 0) errors.reminders = 'Select Correct Date';
     }
   }
 
@@ -113,7 +117,7 @@ function ToDoForm({
   reminders,
   status,
   onSubmitRoute = 'DisplayToDo',
-  navigation,
+  navigation = useNavigation(),
   storeToDo,
 }: todoFormProps) {
   const [submissionState, setSubmissionState] = useState(false);
@@ -160,7 +164,10 @@ function ToDoForm({
       {submissionState && <Loader statusMessage={submissionMsg} />}
 
       {!submissionState && (
-        <ScrollView flex={1}>
+        <ScrollView
+          flex={1}
+          keyboardShouldPersistTaps={'handled'}
+          persistentScrollbar={false}>
           <Formik
             initialValues={{...init}}
             onSubmit={onSubmit}
@@ -175,7 +182,9 @@ function ToDoForm({
             }) => (
               <VStack
                 space={4}
-                mt="4"
+                p="5"
+                mt="5"
+                mb="5"
                 alignItems="center"
                 justifyContent="center">
                 <FormControl isRequired isInvalid={'type' in errors}>
@@ -221,7 +230,7 @@ function ToDoForm({
                     }
                   />
                   <FormControl.ErrorMessage>
-                    {errors.desp}
+                    {errors.dateTime}
                   </FormControl.ErrorMessage>
                 </FormControl>
 
@@ -252,7 +261,7 @@ function ToDoForm({
                     }
                   />
                   <FormControl.ErrorMessage>
-                    {errors.title}
+                    {errors.reminders}
                   </FormControl.ErrorMessage>
                 </FormControl>
                 <FormControl isRequired isInvalid={'status' in errors}>

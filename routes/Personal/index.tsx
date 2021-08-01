@@ -14,7 +14,7 @@ export default function LocalSpace() {
     <>
       <Tab.Navigator initialRouteName="DisplayToDo">
         <Tab.Screen name="DisplayToDo" options={{title: 'To Do'}}>
-          {() => <ToDoListView type={'public'} username={'local'} />}
+          {() => <ToDoListView username={'local'} />}
         </Tab.Screen>
         <Tab.Screen
           name="AddToDo"

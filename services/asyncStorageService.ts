@@ -70,6 +70,7 @@ export default class AsyncStorageService {
 					'local_todo_list',
 					JSON.stringify({data: [id]}),
 				);
+			console.log('done');
 			return true;
 		} catch (e) {
 			return false;
@@ -102,6 +103,7 @@ export default class AsyncStorageService {
 					if (data) res.push(data);
 				}
 			}
+			console.log(res);
 			return res;
 		} catch (e) {
 			console.log('getAllerror', e);
