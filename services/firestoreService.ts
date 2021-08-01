@@ -10,6 +10,7 @@ interface todoProps {
 	desp: string;
 	dateTime: string;
 	reminders: string;
+	username: string;
 	status: 'ongoing' | 'completed' | 'passed';
 }
 
@@ -87,7 +88,7 @@ export default class FirestoreService {
 				const doc = await FirestoreService.findProfile(profile.username);
 				if (doc) {
 					await firestore()
-						.collection('profile')
+						.collection('profiles')
 						.doc(doc.id)
 						.update({
 							following: firestore.FieldValue.arrayUnion(username),
@@ -98,6 +99,7 @@ export default class FirestoreService {
 			}
 			return false;
 		} catch (e) {
+			console.log(e);
 			return false;
 		}
 	}
@@ -107,12 +109,15 @@ export default class FirestoreService {
 			const profile = await AsyncStorageService.getProfile();
 			if (profile) {
 				const doc = await FirestoreService.findProfile(profile.username);
+
 				if (doc) {
+					console.log(doc.data);
 					return doc.data.following;
 				}
 			}
 			return null;
 		} catch (e) {
+			console.log(e);
 			return null;
 		}
 	}

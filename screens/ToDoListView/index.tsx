@@ -12,16 +12,18 @@ interface todoFormProps {
 	type: string;
 	title: string;
 	desp: string;
-	dateTime: Date;
-	reminders: Date;
+	dateTime: string;
+	reminders: string;
+	username: string;
 	status: 'ongoing' | 'completed' | 'passed';
 }
 
 interface listView {
 	type?: string;
+	username: string;
 }
 
-const ListView = ({type = 'local'}: listView) => {
+const ListView = ({type = 'local', username}: listView) => {
 	const [loading, setLoading] = useState(true);
 	const [data, setData] = useState<todoFormProps[]>([]);
 	const [reload, setReload] = useState(1);
@@ -76,7 +78,11 @@ const ListView = ({type = 'local'}: listView) => {
 					) : (
 						<>
 							{data.map((x, idx) => (
-								<Card {...x} remove={remove} key={`todo_${idx}`} />
+								<Card
+									{...x}
+									{...(username == x.username ? {remove} : {})}
+									key={`todo_${idx}`}
+								/>
 							))}
 							{type === 'local' && (
 								<Button onPress={clearItems}>Clear ToDo</Button>

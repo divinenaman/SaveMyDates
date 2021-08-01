@@ -52,6 +52,7 @@ export default class AsyncStorageService {
 				date.getHours(),
 				date.getMilliseconds(),
 				date.getSeconds(),
+				date.valueOf(),
 			].join('_');
 			await AsyncStorage.setItem(id, JSON.stringify(data));
 

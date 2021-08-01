@@ -10,6 +10,13 @@ export async function followProfileService(
 		let doesProfileExist = await FirestoreService.findProfile(username);
 
 		if (doesProfileExist) {
+			let profile = await AsyncStorageService.getProfile();
+			if (!profile || profile.username == username) return false;
+
+			let isNotFollowedAlready = await FirestoreService.getAllFollowProfile();
+			if (!isNotFollowedAlready || isNotFollowedAlready.includes(username))
+				return false;
+
 			if (doesProfileExist.data.publicPin === publicPin) {
 				// add to async
 				await FirestoreService.addFollowProfile(username);
@@ -20,15 +27,5 @@ export async function followProfileService(
 	} catch (e) {
 		console.log(e);
 		return false;
-	}
-}
-
-export async function getFollowedProfiles(): Promise<string[] | null> {
-	try {
-		let following = await FirestoreService.getAllFollowProfile();
-		return following;
-	} catch (e) {
-		console.log(e);
-		return null;
 	}
 }

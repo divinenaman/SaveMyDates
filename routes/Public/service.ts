@@ -3,6 +3,8 @@ import AsyncStorageService from '../../services/asyncStorageService';
 
 interface profileProps {
 	username: string;
+	publicPin: string;
+	privatePin: string;
 }
 
 export async function checkProfileService(): Promise<profileProps | null> {

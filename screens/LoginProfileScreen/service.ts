@@ -1,28 +1,21 @@
 import FirestoreService from '../../services/firestoreService';
 import AsyncStorageService from '../../services/asyncStorageService';
 
-export async function createProfileService(
+export async function loginProfileService(
 	username: string,
 	privatePin: string,
-	publicPin: string,
 ): Promise<boolean> {
 	try {
 		//TODO: create user in firebase
 		let doesProfileExist = await FirestoreService.findProfile(username);
 
-		if (!doesProfileExist) {
-			let saveProfile = await FirestoreService.setDocInCollection('profiles', {
-				username,
-				privatePin,
-				publicPin,
-				following: [],
-			});
-			if (saveProfile) {
+		if (doesProfileExist) {
+			if (doesProfileExist.data.privatePin === privatePin) {
 				// add to async
 				const res = await AsyncStorageService.addProfile({
 					username,
 					privatePin,
-					publicPin,
+					publicPin: doesProfileExist.data.publicPin,
 				});
 				if (res) return true;
 			}

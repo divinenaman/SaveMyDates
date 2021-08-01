@@ -18,7 +18,7 @@ interface todoCardProps {
 	reminders: string;
 	status: 'ongoing' | 'completed' | 'passed';
 	username: string;
-	remove: (a: string) => void;
+	remove?: (a: string) => void;
 }
 
 export default function ToDoCard({
@@ -73,11 +73,13 @@ export default function ToDoCard({
 					{username}
 				</Text>
 			</Box>
-			<Box alignSelf="center">
-				<Text fontSize="sm" highlight mb="2" onPress={() => remove(id)}>
-					remove
-				</Text>
-			</Box>
+			{remove && (
+				<Box alignSelf="center">
+					<Text fontSize="sm" highlight mb="2" onPress={() => remove(id)}>
+						remove
+					</Text>
+				</Box>
+			)}
 		</VStack>
 	);
 }

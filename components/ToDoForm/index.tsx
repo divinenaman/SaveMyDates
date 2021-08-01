@@ -173,9 +173,15 @@ function ToDoForm({
               errors,
               setFieldValue,
             }) => (
-              <VStack space={4} alignItems="center">
+              <VStack
+                space={4}
+                mt="4"
+                alignItems="center"
+                justifyContent="center">
                 <FormControl isRequired isInvalid={'type' in errors}>
-                  <FormControl.Label>Type</FormControl.Label>
+                  <FormControl.Label backgroundColor="black" p="2">
+                    Type
+                  </FormControl.Label>
                   {console.log('errors', errors)}
                   <Input
                     onBlur={handleBlur('type')}
@@ -189,7 +195,9 @@ function ToDoForm({
                 </FormControl>
 
                 <FormControl isRequired isInvalid={'title' in errors}>
-                  <FormControl.Label>Title</FormControl.Label>
+                  <FormControl.Label backgroundColor="black" p="2">
+                    Title
+                  </FormControl.Label>
                   <Input
                     onBlur={handleBlur('title')}
                     placeholder="Study"
@@ -202,7 +210,9 @@ function ToDoForm({
                 </FormControl>
 
                 <FormControl isInvalid={'dateTime' in errors}>
-                  <FormControl.Label>Date and Time</FormControl.Label>
+                  <FormControl.Label backgroundColor="black" p="2">
+                    Date
+                  </FormControl.Label>
                   <DatePicker
                     date={new Date(values.dateTime)}
                     androidVariant="nativeAndroid"
@@ -216,7 +226,9 @@ function ToDoForm({
                 </FormControl>
 
                 <FormControl isRequired isInvalid={'desp' in errors}>
-                  <FormControl.Label>Description</FormControl.Label>
+                  <FormControl.Label backgroundColor="black" p="2">
+                    Description
+                  </FormControl.Label>
                   <Input
                     onBlur={handleBlur('desp')}
                     placeholder="to pass"
@@ -229,7 +241,9 @@ function ToDoForm({
                 </FormControl>
 
                 <FormControl isRequired isInvalid={'reminders' in errors}>
-                  <FormControl.Label>Reminders</FormControl.Label>
+                  <FormControl.Label backgroundColor="black" p="2">
+                    Reminders
+                  </FormControl.Label>
                   <DatePicker
                     date={new Date(values.reminders)}
                     androidVariant="nativeAndroid"
@@ -242,7 +256,9 @@ function ToDoForm({
                   </FormControl.ErrorMessage>
                 </FormControl>
                 <FormControl isRequired isInvalid={'status' in errors}>
-                  <FormControl.Label>Status</FormControl.Label>
+                  <FormControl.Label backgroundColor="black" p="2">
+                    Status
+                  </FormControl.Label>
                   <Select
                     selectedValue={values.status}
                     minWidth={200}

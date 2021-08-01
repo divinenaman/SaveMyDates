@@ -7,13 +7,18 @@ import Loader from '../../components/Loader';
 
 import ToDoListView from '../../screens/ToDoListView';
 import ToDoAdd from '../../screens/ToDoAdd';
+
 import CreateProfileScreen from '../../screens/CreateProfileScreen';
+import LoginProfileScreen from '../../screens/LoginProfileScreen';
+import FollowedProfileScreen from '../../screens/FollowedProfileScreen';
 import FollowProfileScreen from '../../screens/FollowPofileScreen';
 
 import {checkProfileService} from './service';
 
 interface profileProps {
   username: string;
+  publicPin: string;
+  privatePin: string;
 }
 
 type MainNavigatorParamList = {
@@ -50,21 +55,42 @@ export default function PublicSpace() {
         <Loader />
       ) : (
         <>
-          <Tab.Navigator initialRouteName="DisplayToDo">
-            {!profile && <CreateProfileScreen onProfileSet={checkProfile} />}
+          <Tab.Navigator
+            initialRouteName={!profile ? 'GetStarted' : 'DisplayToDo'}>
+            {!profile && (
+              <>
+                <Tab.Screen
+                  name="CreateProfile"
+                  options={{title: 'Create Public Profile'}}>
+                  {() => <CreateProfileScreen onProfileSet={checkProfile} />}
+                </Tab.Screen>
+                <Tab.Screen
+                  name="LoginProfile"
+                  options={{title: 'Login Public Profile'}}>
+                  {() => <LoginProfileScreen onProfileSet={checkProfile} />}
+                </Tab.Screen>
+              </>
+            )}
             {profile && (
               <>
-                <Tab.Screen name="DisplayToDo" options={{title: 'To DO'}}>
-                  {() => <ToDoListView type={'public'} />}
+                <Tab.Screen name="DisplayToDo" options={{title: 'To Do'}}>
+                  {() => (
+                    <ToDoListView type={'public'} username={profile.username} />
+                  )}
                 </Tab.Screen>
                 <Tab.Screen name="AddToDo" options={{title: 'Add To Do'}}>
                   {() => <ToDoAdd type={'public'} />}
                 </Tab.Screen>
                 <Tab.Screen
                   name="FollowProfile"
-                  options={{title: 'Follow Profiles'}}>
-                  {() => <FollowProfileScreen />}
-                </Tab.Screen>
+                  options={{title: 'Follow Profiles'}}
+                  component={FollowProfileScreen}
+                />
+                <Tab.Screen
+                  name="FollowedProfiles"
+                  options={{title: 'Followed Profiles'}}
+                  component={FollowedProfileScreen}
+                />
               </>
             )}
           </Tab.Navigator>
