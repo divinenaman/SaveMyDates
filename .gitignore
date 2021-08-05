@@ -23,7 +23,7 @@ DerivedData
 
 # Android/IntelliJ
 android/app/google-services.json
-android/app/my-upload-key.keystore
+android/app/release.keystore
 #
 build/
 .idea
