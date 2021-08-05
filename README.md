@@ -3,7 +3,7 @@
 <div align="center">
   <br/>
   
-  ### An App that can save all types of to-do/dates for you, leading to an easy productivity boost. It suppots a feature called public space that allows users to         share their to-do among other app users and also maintaining a personal space.
+  ### An App that can save all types of to-do/dates for you, leading to an easy productivity boost. It supports a feature called public space that allows users to         share their to-do among other app users and also maintaining a personal space.
 
   <br/>
 </div>
